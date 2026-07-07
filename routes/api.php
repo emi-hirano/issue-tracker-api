@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\LabelController; 
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -18,6 +19,7 @@ Route::get('/projects', [ProjectController::class, 'index']);
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
 Route::get('/labels', [LabelController::class, 'index']);
 Route::get('/labels/{id}', [LabelController::class, 'show']);
+Route::get('/users', [UserController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
