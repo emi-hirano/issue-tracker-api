@@ -14,10 +14,17 @@ class IssueController extends Controller
         return Issue::with(['reporter', 'assignee', 'project', 'labels'])->get();
     }
     
-    // 読み込み（１件）
+    // 読み込み
+    // 読み込み（１件・詳細画面用にリレーションを全て付ける）
     public function show($id)
     {
-        return Issue::findOrFail($id);
+        return Issue::with([
+            'reporter',
+            'assignee',
+            'project',
+            'labels',
+            'comments.user', // コメントと、その投稿者も一緒に取得
+        ])->findOrFail($id);
     }
 
     // 追加
