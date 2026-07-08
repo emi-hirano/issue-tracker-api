@@ -9,11 +9,16 @@ use Illuminate\Http\Request;
 class IssueController extends Controller
 {
     // 読み込み
-    public function index()
+    public function index(Request $request)
     {
-        return Issue::with(['reporter', 'assignee', 'project', 'labels'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Issue::with(['reporter', 'assignee', 'project', 'labels']);
+
+        // statusパラメータがあれば、その値で絞り込む
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        return $query->orderBy('created_at', 'desc')->get();
     }
     
     // 読み込み
