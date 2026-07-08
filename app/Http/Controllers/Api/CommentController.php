@@ -21,13 +21,18 @@ class CommentController extends Controller
     {
         $issue = Issue::findOrFail($issueId);
 
+        // 本文だけ受け取る（投稿者はフロントから受け取らない）
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'body'    => 'required|string',
+            'body' => 'required|string',
         ]);
 
-        $comment = $issue->comments()->create($validated);
-        return $comment;
+        // 投稿者はログイン中のユーザーに固定（なりすまし防止）
+        $comment = $issue->comments()->create([
+            'body'    => $validated['body'],
+            'user_id' => $request->user()->id,
+        ]);
+
+        return $comment->load('user'); // 投稿者情報も付けて返す
     }
 
     // コメント削除

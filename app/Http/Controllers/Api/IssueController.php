@@ -17,7 +17,6 @@ class IssueController extends Controller
     }
     
     // 読み込み
-    // 読み込み（１件・詳細画面用にリレーションを全て付ける）
     public function show($id)
     {
         return Issue::with([
@@ -25,7 +24,10 @@ class IssueController extends Controller
             'assignee',
             'project',
             'labels',
-            'comments.user', // コメントと、その投稿者も一緒に取得
+            'comments' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'comments.user',
         ])->findOrFail($id);
     }
 
