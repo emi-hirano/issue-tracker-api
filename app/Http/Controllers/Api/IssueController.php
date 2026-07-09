@@ -122,4 +122,15 @@ class IssueController extends Controller
         $issue->delete();
         return response()->json(['message' => '削除しました']);
     }
+
+    // ログインユーザーにアサインされた課題一覧
+    public function my(Request $request)
+    {
+        $user = $request->user();
+
+        return Issue::with(['reporter', 'assignee', 'project', 'labels'])
+            ->where('assignee_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+    }
 }
