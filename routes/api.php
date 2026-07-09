@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/labels/{id}', [LabelController::class, 'destroy']);
 
     // ログインユーザーにアサインされたIssue一覧
-    Route::get('/issues/my', [IssueController::class, 'my']);
+    Route::get('/my-issues', [IssueController::class, 'my']);
 
     Route::get('/issues/{issue}/comments', [CommentController::class, 'index']);
     Route::post('/issues/{issue}/comments', [CommentController::class, 'store']);
