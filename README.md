@@ -1,58 +1,105 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Issue Tracker API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Issue Tracker のバックエンド API です。
 
-## About Laravel
+React + TypeScript で構築したフロントエンドと連携し、課題（Issue）の管理機能を提供します。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Frontend Repository**
+- https://github.com/emi-hirano/issue-tracker-front
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 概要
 
-## Learning Laravel
+Laravel を使用して REST API を構築しました。
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+認証には Laravel Sanctum を採用し、Issue・Project・Label・Comment の CRUD API を実装しています。
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+また、検索、ページネーション、ログインユーザーに割り当てられた課題一覧（My Issues）など、実務を意識した機能を実装しています。
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 開発方針
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+このプロジェクトでは、生成AI（ChatGPT・Claude）を積極的に活用して開発を行いました。
+
+AIをコード生成ツールとして利用するだけではなく、設計の相談、実装方針の比較、デバッグ、リファクタリングなどにも活用しています。
+
+生成されたコードはそのまま利用するのではなく、内容を理解・検証し、自分で説明できるコードのみを採用することを開発方針としました。
+
+また、実際の業務で利用される課題管理システムを意識し、機能追加や改善を繰り返しながら完成度を高めました。
+
+---
+
+## 使用技術
+
+| 項目 | 技術 |
+|------|------|
+| Framework | Laravel 13 |
+| Language | PHP 8.4 |
+| Database | MySQL 8 |
+| Authentication | Laravel Sanctum |
+| ORM | Eloquent ORM |
+| Development Environment | Laravel Sail (Docker) |
+| API | REST API |
+
+---
+
+## 主な機能
+
+- Issue（課題）のCRUD
+- Project（プロジェクト）のCRUD
+- Label（ラベル）のCRUD
+- Comment（コメント）の投稿・削除
+- Laravel Sanctumによる認証
+- タイトル・ステータス・優先度・ラベルによる複合検索
+- ページネーション
+- My Issues（ログインユーザーにアサインされた課題一覧API）
+
+---
+
+## 工夫した点
+
+- REST APIとして設計し、フロントエンドとの責務を分離
+- Laravel Sanctumによるトークン認証を実装
+- タイトル検索では特殊文字をエスケープし、安全な部分一致検索を実装
+- ラベル検索では多対多リレーション（whereHas）を利用
+- Eager Loadingを利用し、N+1問題を回避
+- ページネーションを導入し、大量データでも快適に利用できるよう改善
+- ログインユーザーにアサインされた課題のみ取得する My Issues API を実装
+
+---
+
+## セットアップ
 
 ```bash
-composer require laravel/boost --dev
+git clone <repository-url>
 
-php artisan boost:install
+cd issue-tracker-api
+
+cp .env.example .env
+
+composer install
+
+./vendor/bin/sail up -d
+
+./vendor/bin/sail artisan key:generate
+
+./vendor/bin/sail artisan migrate --seed
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+API
 
-## Contributing
+```
+http://localhost
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 今後の改善予定
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- 権限管理の強化
+- Feature Test・Unit Testの拡充
+- APIレスポンスの統一
+- OpenAPI（Swagger）によるAPI仕様書の作成
+- AIを活用したIssue要約・タイトル提案機能
