@@ -18,7 +18,27 @@ class IssueController extends Controller
             $query->where('status', $request->status);
         }
 
-        return $query->orderBy('created_at', 'desc')->get();
+        // キーワード検索
+        if ($request->filled('keyword')) {
+            $keyword = addcslashes($request->keyword, '%_\\');
+
+            $query->whereRaw("title LIKE ? ESCAPE '\\\\'", ["%{$keyword}%"]);
+        }
+
+        // 優先度検索
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        // ラベルで絞り込み
+        if ($request->filled('label_id')) {
+            $query->whereHas('labels', function ($q) use ($request) {
+                $q->where('labels.id', $request->label_id);
+            });
+        }
+
+        // 作成日時の新しい順で、1ページ10件ずつ取得する
+        return $query->orderBy('created_at', 'desc')->paginate(10);
     }
     
     // 読み込み
