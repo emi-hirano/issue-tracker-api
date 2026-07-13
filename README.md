@@ -5,6 +5,8 @@ Issue Tracker のバックエンド API です。
 React + TypeScript で構築したフロントエンドと連携し、課題（Issue）の管理機能を提供します。
 
 **Frontend Repository**
+
+フロントエンドの起動方法やテストアカウントについては、以下のリポジトリをご覧ください。
 - https://github.com/emi-hirano/issue-tracker-front
 
 ---
