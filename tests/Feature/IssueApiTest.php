@@ -181,4 +181,16 @@ class IssueApiTest extends TestCase
         // レスポンス全体にemailという文字列が含まれないこと
         $response->assertJsonMissing(['email' => $user->email]);
     }
+    
+    /**
+     * Acceptヘッダーが無い未認証リクエストでも、リダイレクトせず401を返すこと。
+     * API専用アプリのため、ログイン画面へのリダイレクトを無効化した対策を確認する。
+     */
+    public function test_Acceptヘッダーが無くても401を返す(): void
+    {
+        // getJson ではなく get を使い、Accept: application/json を付けない
+        $response = $this->get('/api/issues');
+
+        $response->assertStatus(401);
+    }
 }
