@@ -164,4 +164,21 @@ class IssueApiTest extends TestCase
         // エスケープされていれば、% を含むタイトルは無いので0件になる
         $response->assertJsonCount(0, 'data');
     }
+
+    /**
+     * 課題を取得したとき、登録者・担当者のメールアドレスが含まれないこと。
+     * Userモデルの $hidden に email を追加した対策が効いていることを確認する。
+     */
+    public function test_課題取得時にメールアドレスが漏れない(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        Issue::factory()->create();
+
+        $response = $this->getJson('/api/issues');
+
+        $response->assertStatus(200);
+        // レスポンス全体にemailという文字列が含まれないこと
+        $response->assertJsonMissing(['email' => $user->email]);
+    }
 }
