@@ -60,6 +60,37 @@ AIをコード生成ツールとして利用するだけではなく、設計の
 
 ---
 
+## APIエンドポイント
+
+すべて `/api` 配下です。認証が必要なエンドポイントには Sanctum のトークンが必要です。
+
+| メソッド | パス | 概要 | 認証 |
+|---------|------|------|:----:|
+| POST | `/login` | ログイン（トークン発行） | 不要 |
+| GET | `/user` | ログイン中のユーザー情報 | 要 |
+| GET | `/issues` | 課題一覧（検索・ページネーション対応） | 要 |
+| GET | `/issues/{id}` | 課題詳細 | 要 |
+| POST | `/issues` | 課題の作成 | 要 |
+| PUT | `/issues/{id}` | 課題の更新 | 要 |
+| DELETE | `/issues/{id}` | 課題の削除 | 要 |
+| GET | `/my-issues` | ログインユーザーにアサインされた課題一覧 | 要 |
+| GET | `/issues/{issue}/comments` | コメント一覧 | 要 |
+| POST | `/issues/{issue}/comments` | コメントの投稿 | 要 |
+| DELETE | `/comments/{id}` | コメントの削除 | 要 |
+| GET | `/projects` | プロジェクト一覧 | 要 |
+| GET | `/projects/{id}` | プロジェクト詳細 | 要 |
+| POST | `/projects` | プロジェクトの作成 | 要 |
+| PUT | `/projects/{id}` | プロジェクトの更新 | 要 |
+| DELETE | `/projects/{id}` | プロジェクトの削除 | 要 |
+| GET | `/labels` | ラベル一覧 | 要 |
+| GET | `/labels/{id}` | ラベル詳細 | 要 |
+| POST | `/labels` | ラベルの作成 | 要 |
+| PUT | `/labels/{id}` | ラベルの更新 | 要 |
+| DELETE | `/labels/{id}` | ラベルの削除 | 要 |
+| GET | `/users` | ユーザー一覧（id・nameのみ） | 要 |
+
+---
+
 ## 工夫した点
 
 - REST APIとして設計し、フロントエンドとの責務を分離
@@ -69,6 +100,17 @@ AIをコード生成ツールとして利用するだけではなく、設計の
 - Eager Loadingを利用し、N+1問題を回避
 - ページネーションを導入し、大量データでも快適に利用できるよう改善
 - ログインユーザーにアサインされた課題のみ取得する My Issues API を実装
+
+
+---
+
+## テスト
+
+Feature テストを実装しています。
+
+```bash
+./vendor/bin/sail artisan test
+```
 
 ---
 
@@ -95,13 +137,3 @@ API
 ```
 http://localhost
 ```
-
----
-
-## 今後の改善予定
-
-- 権限管理の強化
-- Feature Test・Unit Testの拡充
-- APIレスポンスの統一
-- OpenAPI（Swagger）によるAPI仕様書の作成
-- AIを活用したIssue要約・タイトル提案機能
